@@ -36,7 +36,7 @@ if [[ "$action" != "detach" ]]; then
     fi
     if [[ "$action" == "new" || "$action" == "rename" ]]; then
         mkfifo /tmp/tmux_fzf_session_name
-        tmux split-window -v -l 30% -b "bash -c 'printf \"Session Name: \" && read session_name && echo \"\$session_name\" > /tmp/tmux_fzf_session_name'" &
+		tmux display-popup -h 50% -w 50% -E "bash -c 'printf \"Session Name: \" && read session_name && echo \"\$session_name\" > /tmp/tmux_fzf_session_name'"
         session_name=$(cat /tmp/tmux_fzf_session_name)
         rm /tmp/tmux_fzf_session_name
         if [ -z "$session_name" ]; then
