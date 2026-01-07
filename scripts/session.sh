@@ -35,10 +35,11 @@ if [[ "$action" != "detach" ]]; then
         target_origin=$(echo "$target_origin" | sed -E "s/\[current\]/$current_session:/")
     fi
     if [[ "$action" == "new" || "$action" == "rename" ]]; then
-        mkfifo /tmp/tmux_fzf_session_name
-		tmux display-popup -h 50% -w 50% -E "bash -c 'printf \"Session Name: \" && read session_name && echo \"\$session_name\" > /tmp/tmux_fzf_session_name'"
-        session_name=$(cat /tmp/tmux_fzf_session_name)
-        rm /tmp/tmux_fzf_session_name
+        # Create a unique temporary file for session name
+        tmp_file=$(mktemp /tmp/tmux_fzf_session_name.XXXXXX)
+        tmux display-popup -h 50% -w 50% -E "bash -c 'printf \"Session Name: \" && read session_name && echo \"\$session_name\" > $tmp_file'"
+        session_name=$(cat "$tmp_file")
+        rm -f "$tmp_file"
         if [ -z "$session_name" ]; then
             exit
         fi
